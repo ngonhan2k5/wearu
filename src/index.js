@@ -19,7 +19,7 @@ if(typeof(module.hot) !== 'undefined') { // eslint-disable-line no-undef
 
       module.hot.check(false).then(outdatedModules => {
         // outdated modules...
-        location.reload()
+        // location.reload()
       }).catch(error => {
         // catch errors
       });
