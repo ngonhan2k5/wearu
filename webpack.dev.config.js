@@ -1,7 +1,7 @@
 const path = require("path")
 const webpack = require('webpack')
 const HtmlWebPackPlugin = require("html-webpack-plugin")
-
+const CopyPlugin = require('copy-webpack-plugin');
 // var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 
@@ -104,7 +104,7 @@ module.exports = {
 
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-
+    new CopyPlugin([{from: 'favicon.png', to: 'favicon.png'}]),
 
   ]
 }

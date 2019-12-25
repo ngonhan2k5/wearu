@@ -1,9 +1,10 @@
 const path = require("path")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
+// const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require('terser-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
     main: './src/index.js',
@@ -93,6 +94,8 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
       chunkFilename: "[id].css"
-    })
+    }),
+
+    new CopyPlugin([{from: 'favicon.png', to: 'favicon.png'}]),
   ]
 }

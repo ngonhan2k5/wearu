@@ -174,7 +174,7 @@ map.on('click', function(event) {
     popup.setPosition(coordinate);
     var con = formatCoordinate(toLonLat(coordinate), feature.get("data"))
     //  $(element).popover('destroy');
-    console.log(con)
+    // console.log(con)
     map.getView().fit(map.getFeaturesAtPixel(event.pixel)[0].getGeometry(), {
       maxZoom: 18,
       duration: 500
