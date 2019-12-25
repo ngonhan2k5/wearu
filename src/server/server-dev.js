@@ -52,7 +52,7 @@ app.get('/:url-:lru', routes.fetch)
 // app.use(routes.errorPage(compiler, ERROR_FILE))
 
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5001
 app.listen(PORT, () => {
     console.log(`App listening to ${PORT}....`)
     console.log('Press Ctrl+C to quit.')

@@ -53,7 +53,8 @@ var map = new Map({
     zoom: 2
   })
 });
-var styleJson = 'https://api.maptiler.com/maps/streets/style.json?key=1Ngcfai0rnKxUgMDfd8O';
+//var styleJson = 'https://api.maptiler.com/maps/streets/style.json?key=1Ngcfai0rnKxUgMDfd8O';
+var styleJson = 'https://api.maptiler.com/maps/topo/style.json?key=1Ngcfai0rnKxUgMDfd8O';
 // https://api.maptiler.com/tiles/landcover/8/202/120.pbf?key=1Ngcfai0rnKxUgMDfd8O
 // const layer = new VectorTileLayer({
 //   source: new VectorTileSource({
@@ -95,7 +96,7 @@ const layer2 = new VectorLayer({
   style: style
 });
 
-console.log(layer2)
+//console.log(layer2)
 
 olms(map, styleJson).then(
   ()=>{
@@ -104,6 +105,7 @@ olms(map, styleJson).then(
 );
 
 
+var once = false
 
 navigator.geolocation.watchPosition(function(pos) {
   //import location from './location'
@@ -113,16 +115,19 @@ navigator.geolocation.watchPosition(function(pos) {
   // source.clear(true);
   const acc = new Feature(accuracy.transform('EPSG:4326', map.getView().getProjection()))
   acc.setId("ss")
-  console.log(acc)
+  //console.log(acc)
   source.addFeatures([
     acc,
     new Feature(new Point(fromLonLat(coords)))
   ]);
   
-  var locs = location(coords).change()
-  console.log(locs[0].get("data"))
-  source.addFeatures(locs)
-  
+  if (!once){
+  	var locs = location(coords).change()
+  	//console.log(locs[0].get("data"))
+  	source.addFeatures(locs)
+  	once = true
+	console.log("SIM")
+  }
 }, function(error) {
   alert(`ERROR: ${error.message}`);
 }, {
@@ -200,12 +205,12 @@ map.on('doubleclick', function(event) {
   console.log("dd")
 })
 
-map.on('pointermove', function(event) {
+/*map.on('pointermove', function(event) {
   if (map.hasFeatureAtPixel(event.pixel)) {
     map.getViewport().style.cursor = 'pointer';
   } else {
     map.getViewport().style.cursor = 'inherit';
   }
 });
-
+*/
 
