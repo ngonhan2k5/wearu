@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
-var mongoUrl = "mongodb://localhost:27017/shorter";
+var mongoUrl = "mongodb://localhost:27017/wearu";
 
 const db = {
     saveUrl : (slug, url) => {
