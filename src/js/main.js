@@ -23,6 +23,7 @@ import Control from 'ol/control/Control';
 import {Circle, Fill, Style, Stroke} from 'ol/style';
 import location from './location'
 // import {useGeographic} from 'ol/proj';
+import orient from './orient'
 
 var key ='1Ngcfai0rnKxUgMDfd8O';
 var attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
@@ -101,7 +102,7 @@ const layer2 = new VectorLayer({
 
 
 var once = false
-
+var locs
 navigator.geolocation.watchPosition(function(pos) {
   //import location from './location'
   
@@ -109,7 +110,7 @@ navigator.geolocation.watchPosition(function(pos) {
   const accuracy = circular(coords, pos.coords.accuracy);
 
   map.getView().setCenter(fromLonLat(coords))
-  // source.clear(true);
+  source.clear(true);
   const acc = new Feature(accuracy.transform('EPSG:4326', map.getView().getProjection()))
   acc.setId("ss")
   //console.log(acc)
@@ -120,7 +121,7 @@ navigator.geolocation.watchPosition(function(pos) {
   
 
   if (!once){
-    var locs = location(coords).change()
+    locs = location(coords).change()
     //console.log(locs[0].get("data"))
     source.addFeatures(locs)
     var ext = source.getExtent()
@@ -136,11 +137,13 @@ navigator.geolocation.watchPosition(function(pos) {
               duration: 2000
             });
           }, 1000)
-        once = true
+        
       }
     );
-  	
-	console.log("SIM")
+  	once = true
+	  console.log("SIM")
+  }else{
+    source.addFeatures(locs)
   }
 }, function(error) {
   alert(`ERROR: ${error.message}`);
@@ -227,6 +230,14 @@ map.on('doubleclick', function(event) {
   }
 });
 */
+var info = document.getElementById('info');
 
+orient(
+  function(heading, accurate){
+  console.log(heading, accurate)
+  info.innerText = JSON.stringify({heading, accurate}, null, 2);
+  info.style.opacity = 1;
+}
+)
 
 
