@@ -98,12 +98,6 @@ const layer2 = new VectorLayer({
 
 //console.log(layer2)
 
-olms(map, styleJson).then(
-  ()=>{
-    map.addLayer(layer2);
-  }
-);
-
 
 var once = false
 
@@ -122,10 +116,20 @@ navigator.geolocation.watchPosition(function(pos) {
   ]);
   
   if (!once){
-  	var locs = location(coords).change()
-  	//console.log(locs[0].get("data"))
-  	source.addFeatures(locs)
-  	once = true
+    olms(map, styleJson).then(
+      ()=>{
+        map.getView().fit(acc.getGeometry(), {
+          maxZoom: 18,
+          duration: 500
+        });
+        map.addLayer(layer2);
+        var locs = location(coords).change()
+        //console.log(locs[0].get("data"))
+        source.addFeatures(locs)
+        once = true
+      }
+    );
+  	
 	console.log("SIM")
   }
 }, function(error) {
