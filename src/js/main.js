@@ -50,7 +50,7 @@ var map = new Map({
   // ],
   view: new View({
     center: fromLonLat([0, 0]),
-    zoom: 2
+    zoom: 10
   })
 });
 //var styleJson = 'https://api.maptiler.com/maps/streets/style.json?key=1Ngcfai0rnKxUgMDfd8O';
@@ -99,6 +99,7 @@ const layer2 = new VectorLayer({
 //console.log(layer2)
 
 
+
 var once = false
 
 navigator.geolocation.watchPosition(function(pos) {
@@ -106,6 +107,8 @@ navigator.geolocation.watchPosition(function(pos) {
   
   const coords = [pos.coords.longitude, pos.coords.latitude];
   const accuracy = circular(coords, pos.coords.accuracy);
+
+  map.getView().setCenter(fromLonLat(coords))
   // source.clear(true);
   const acc = new Feature(accuracy.transform('EPSG:4326', map.getView().getProjection()))
   acc.setId("ss")
@@ -115,17 +118,24 @@ navigator.geolocation.watchPosition(function(pos) {
     new Feature(new Point(fromLonLat(coords)))
   ]);
   
+
   if (!once){
+    var locs = location(coords).change()
+    //console.log(locs[0].get("data"))
+    source.addFeatures(locs)
+    var ext = source.getExtent()
+
     olms(map, styleJson).then(
       ()=>{
-        map.getView().fit(acc.getGeometry(), {
-          maxZoom: 18,
-          duration: 500
-        });
         map.addLayer(layer2);
-        var locs = location(coords).change()
-        //console.log(locs[0].get("data"))
-        source.addFeatures(locs)
+        
+        // map.getView().fit(acc.getGeometry(), {
+        setTimeout(()=>{
+            map.getView().fit(ext, {
+              maxZoom: 18,
+              duration: 2000
+            });
+          }, 1000)
         once = true
       }
     );
@@ -217,4 +227,6 @@ map.on('doubleclick', function(event) {
   }
 });
 */
+
+
 
