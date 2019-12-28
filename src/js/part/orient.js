@@ -71,7 +71,7 @@ const orient = (orientationChanged) => {
     // window.addEventListener(orientationEvent, function () {
     //     orientationChanged();
     // }, false);
-
+    var lastHeading = 0, lastAccuracy = 0
     function process(event){
         if (event.webkitCompassHeading !== undefined || event.alpha != null) {
             hasCompass = true
@@ -90,11 +90,14 @@ const orient = (orientationChanged) => {
             // around the center of the screen
             // (support for android)
             currentHeading = (270 - event.alpha) * -1;
-            accuracy = event.webkitCompassAccuracy;
+            accuracy = event.webkitCompassAccuracy || 0;
         }
-
-        orientationChanged(currentHeading, accuracy)
-
+        
+        if (lastHeading != currentHeading.toFixed([0]) || lastAccuracy != accuracy && accuracy.toFixed([0])||0)
+            orientationChanged(currentHeading, accuracy)
+            
+        lastAccuracy = accuracy && accuracy.toFixed([0]) || 0
+        lastHeading = currentHeading.toFixed([0])
     }
     if (window.DeviceOrientationEvent){
         window.addEventListener("deviceorientation", process)

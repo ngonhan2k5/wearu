@@ -12,7 +12,7 @@ import routes from './routes'
 
 const app = express(),
     DIST_DIR = __dirname,
-    HTML_FILE = path.join(DIST_DIR, 'public', 'index.html'),
+    HTML_FILE = path.join(DIST_DIR, 'dist/public', 'index.html'),
     ERROR_FILE = path.join(DIST_DIR, 'public', 'error.html'),
     compiler = webpack(config)
 
@@ -37,19 +37,19 @@ app.post('/api/shorter', routes.shorter)
 
 app.get('/:url-:lru', routes.fetch)
 
-
-// app.get('*', (req, res, next) => {
-//     console.log("here")
-//     compiler.outputFileSystem.readFile(HTML_FILE, (err, result) => {
-//         if (err) {
-//             return next(err)
-//         }
-//         res.set('content-type', 'text/html')
-//         res.send(result)
-//         res.end()
-//     })
-// })
-// app.use(routes.errorPage(compiler, ERROR_FILE))
+// app.get('/share/:lon-:lat', routes.share)
+app.get('*', (req, res, next) => {
+    console.log("here")
+    compiler.outputFileSystem.readFile(HTML_FILE, (err, result) => {
+        if (err) {
+            return next(err)
+        }
+        res.set('content-type', 'text/html')
+        res.send(result)
+        res.end()
+    })
+})
+app.use(routes.errorPage(compiler, ERROR_FILE))
 
 
 const PORT = process.env.PORT || 5001

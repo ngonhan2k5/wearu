@@ -9,7 +9,7 @@ import {getVectorContext} from 'ol/render';
 import {fromLonLat} from 'ol/proj';
 import {upAndDown} from 'ol/easing';
 
-import test from "../server/db/test"
+import test from "../../server/db/test"
 
 // var image = new Circle({
 //     radius: 8,

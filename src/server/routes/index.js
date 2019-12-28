@@ -9,6 +9,21 @@ import Html from '../Html'
 var fs = require("fs");
 
 const routes = {
+    share: (req, res, next) => {
+        console.log(req.body.url)
+        console.log("Fetch", req.params)
+        // let url = codenamize(req.body.url)
+        let slug = `${req.params.url}-${req.params.lru}`
+        // let url = codenamize(req.body.url)
+        
+        // db.saveUrl(url, req.body.url)
+
+        // let shortUrl = (process.env.NODE_ENV=="production"?"http://idbi.me/":"http://localhost:5000/" )+ url
+
+        // res.json({ shortedUrl: shortUrl })
+        res.send('OK')
+        res.end()
+    },
     shorter: (req, res, next) => {
         console.log(req.body.url)
         // let url = codenamize(req.body.url)
