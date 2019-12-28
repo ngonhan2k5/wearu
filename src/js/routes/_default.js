@@ -8,7 +8,7 @@ import Control from 'ol/control/Control';
 
 console.log('root')
 var pattern = new UrlPattern('/:action(/:lon/:lat)', {segmentValueCharset:'a-zA-Z0-9.'});
-
+var currentCoord = [0,0]
 export default {
     onInit:(output) => {
         var {map, coords, source, layer2} = output
@@ -32,12 +32,13 @@ export default {
                 //     duration: 2000
                 //     });
                 // }, 1000)
-                
+                utils.drawLocationMe(source)
             }
         )
 
         addShareButton(map, function(){
-            console.log(pattern.stringify({action: "share", lon: 10, lat: 20}))
+
+            console.log(pattern.stringify({action: "share", lon: currentCoord[0], lat: currentCoord[1]}))
             // location = pattern.stringify({action: "share", lon: 10, lat: 20})
             if (navigator.share) {
                 navigator.share({
@@ -52,6 +53,7 @@ export default {
         return true
     },
     onPosChange: (map, coords, accuracy, source) => {
+        currentCoord = coords
         console.log(coords, accuracy, source)
         //import location from './location'
 
@@ -72,7 +74,7 @@ export default {
 function addShareButton(map, onClick){
     const locate = document.createElement('div');
     locate.className = 'ol-control ol-unselectable share';
-    locate.innerHTML = '<button title="Share">🔗</button>';
+    locate.innerHTML = '<button title="Share"><var>🔗</var></button>';
     locate.addEventListener('click', onClick);
     map.addControl(new Control({
         element: locate

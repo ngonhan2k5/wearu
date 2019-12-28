@@ -104,7 +104,10 @@ module.exports = {
 
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new CopyPlugin([{from: 'favicon.png', to: 'favicon.png'}]),
+    new CopyPlugin([
+      {from: 'favicon.png', to: 'favicon.png'},
+      {from: 'src/js/map/style.json', to: 'style.json'}
+    ]),
 
   ]
 }

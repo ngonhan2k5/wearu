@@ -30,7 +30,8 @@ import orient from '../part/orient'
 var key = '1Ngcfai0rnKxUgMDfd8O';
 var attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
     '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
-var styleJson = 'https://api.maptiler.com/maps/topo/style.json?key=1Ngcfai0rnKxUgMDfd8O';
+// var styleJson = 'https://api.maptiler.com/maps/topo/style.json?key=1Ngcfai0rnKxUgMDfd8O';
+var styleJson = 'http://localhost:5001/static/style.json?key=1Ngcfai0rnKxUgMDfd8O';
 
 const defaultAction = {
 
@@ -124,6 +125,23 @@ export const utils = {
         olms(map, styleJson).then(
             callback
         )
+    },
+    drawLocationMe: (source, onClick, label="Locate me")=> {
+        const locate = document.createElement('div');
+        locate.className = 'ol-control ol-unselectable locate asaaaa';
+        locate.innerHTML = '<button title="'+label+'">◎</button>';
+        var onClick = typeof onClick == "function" ? onClick(source): function () {
+            if (!source.isEmpty() && source.getFeatureById("ss")) {
+                map.getView().fit(source.getFeatureById("ss").getGeometry(), {
+                    maxZoom: 18,
+                    duration: 500
+                });
+            }
+        }
+        locate.addEventListener('click', onClick);
+        map.addControl(new Control({
+            element: locate
+        }));
     }
 }
 
@@ -234,20 +252,7 @@ const init = (opts, params) => {
         
     // }
 
-    const locate = document.createElement('div');
-    locate.className = 'ol-control ol-unselectable locate asaaaa';
-    locate.innerHTML = '<button title="Locate me">◎</button>';
-    locate.addEventListener('click', function () {
-        if (!source.isEmpty() && source.getFeatureById("ss")) {
-            map.getView().fit(source.getFeatureById("ss").getGeometry(), {
-                maxZoom: 18,
-                duration: 500
-            });
-        }
-    });
-    map.addControl(new Control({
-        element: locate
-    }));
+
 
     var element = document.getElementById('popup');
 

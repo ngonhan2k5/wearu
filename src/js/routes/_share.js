@@ -14,6 +14,7 @@ export default {
         console.log(params)
         if (params && params.lon && params.lat){
             var fea = new Feature(new Point(fromLonLat([params.lon, params.lat])))
+            fea.setId('share')
             source.addFeature(fea)
             // var locs = fromLonLat([params.lon, params.lat])
             console.log(2222, fea)
@@ -34,7 +35,17 @@ export default {
                     //         duration: 2000
                     //     });
                     // }, 1000)
+                    utils.drawLocationMe(source, function(source){
+                        return function(){
+                            if (!source.isEmpty() && source.getFeatureById("share")) {
+                                map.getView().fit(source.getFeatureById("share").getGeometry(), {
+                                    maxZoom: 18,
+                                    duration: 2000
+                                });
+                            }
+                        }
                     
+                    }, 'Locate Shared')
                 }
             )
             return true

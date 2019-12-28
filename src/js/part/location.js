@@ -29,7 +29,7 @@ import test from "../../server/db/test"
 //     })
 //   })
 
-export default location = (coords)=>{
+export default  (coords)=>{
 
     if (test.geometries.length == 0)
         test.geometries = test.genTestNear(10, coords)

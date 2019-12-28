@@ -37,6 +37,8 @@ app.post('/api/shorter', routes.shorter)
 
 app.get('/:url-:lru', routes.fetch)
 
+app.use('/static', express.static(__dirname +'/public', { maxAge: '1d' }))
+
 // app.get('/share/:lon-:lat', routes.share)
 app.get('*', (req, res, next) => {
     console.log("here")
@@ -49,7 +51,8 @@ app.get('*', (req, res, next) => {
         res.end()
     })
 })
-app.use(routes.errorPage(compiler, ERROR_FILE))
+
+// app.use(routes.errorPage(compiler, ERROR_FILE))
 
 
 const PORT = process.env.PORT || 5001

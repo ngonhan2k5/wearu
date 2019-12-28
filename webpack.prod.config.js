@@ -96,6 +96,9 @@ module.exports = {
       chunkFilename: "[id].css"
     }),
 
-    new CopyPlugin([{from: 'favicon.png', to: 'favicon.png'}]),
+    new CopyPlugin([
+      {from: 'favicon.png', to: 'favicon.png'},
+      {from: 'src/js/map/style.json', to: 'style.json'}
+    ]),
   ]
 }
