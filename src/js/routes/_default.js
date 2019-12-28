@@ -44,7 +44,7 @@ export default {
                 navigator.share({
                   title: document.title,
                   text: "Hello World",
-                  url: pattern.stringify({action: "share", lon: 10, lat: 20})
+                  url: pattern.stringify({action: "share", lon: currentCoord[0], lat: currentCoord[1]})
                 }).then(() => console.log('Successful share'))
                 .catch(error => console.log('Error sharing:', error));
               }
