@@ -31,8 +31,8 @@ var key = '1Ngcfai0rnKxUgMDfd8O';
 var attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
     '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 // var styleJson = 'https://api.maptiler.com/maps/topo/style.json?key=1Ngcfai0rnKxUgMDfd8O';
-var styleJson = 'http://localhost:5001/static/style.json?key=1Ngcfai0rnKxUgMDfd8O';
-
+// var styleJson = 'http://localhost:5001/static/style.json?key=1Ngcfai0rnKxUgMDfd8O';
+var styleJson = '/static/style.json?key=1Ngcfai0rnKxUgMDfd8O';
 const defaultAction = {
     locRequire: false,
     onInit: (output) => {
