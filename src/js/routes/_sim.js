@@ -1,13 +1,12 @@
 import location from '../part/location'
 import Polygon, { circular } from 'ol/geom/Polygon';
 import {utils} from '../map'
-import { fromLonLat, toLonLat } from 'ol/proj';
 
 console.log('sim1')
 
 export default {
     onInit:(output) => {
-        var {map, coords, source, layer2} = output
+        var {map, coords, source, layer2, accuracy} = output
         // console.log(params)
         
         var locs = location(coords).change()
@@ -29,6 +28,7 @@ export default {
                     });
                 }, 1000)
                 
+                utils.drawLocationWithAcuracy(map, source, coords, accuracy)
             }
         )
 
@@ -36,17 +36,10 @@ export default {
     },
     onPosChange: (map, coords, accuracy, source) => {
         console.log(coords, accuracy, source)
-        //import location from './location'
-
-        
+     
         const acc = circular(coords, accuracy);
 
-        
-        // map.getView().setCenter(fromLonLat(coords))
-        // source.clear(true);
-        
-        utils.drawLocationWithAcuracy(map, source, coords, acc)
-
+        utils.changeMyLocation(map, source, coords, accuracy)
         
     }
 

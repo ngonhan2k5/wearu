@@ -5,10 +5,10 @@ import map from '../map'
 //import orient from './part/orient'
 import UrlPattern from 'url-pattern'
 
-var pattern = new UrlPattern('/:action(/:lon/:lat)', {segmentValueCharset:'a-zA-Z0-9.'});
+var pattern = new UrlPattern('/:action(/:lon/:lat)', {segmentValueCharset:'a-zA-Z0-9.\\-'});
 var params = pattern.match(location.pathname)
 
-// console.log(params)
+console.log('params', params)
 var action = 'default'
 if (params != null && ['share', 'sim'].includes(params.action)){
     action = params.action

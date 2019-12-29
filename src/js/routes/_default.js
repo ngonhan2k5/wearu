@@ -1,9 +1,6 @@
 import UrlPattern from 'url-pattern'
 
-import location from '../part/location'
-import Polygon, { circular } from 'ol/geom/Polygon';
 import {utils} from '../map'
-import { fromLonLat, toLonLat } from 'ol/proj';
 import Control from 'ol/control/Control';
 
 console.log('root')
@@ -11,7 +8,7 @@ var pattern = new UrlPattern('/:action(/:lon/:lat)', {segmentValueCharset:'a-zA-
 var currentCoord = [0,0]
 export default {
     onInit:(output) => {
-        var {map, coords, source, layer2} = output
+        var {map, coords, source, layer2, accuracy} = output
         // console.log(params)
         
         // var locs = location(coords).change()
@@ -32,7 +29,20 @@ export default {
                 //     duration: 2000
                 //     });
                 // }, 1000)
-                utils.drawLocationMe(source)
+                utils.drawLocationMe(source, function(source){
+                    return function(){
+                        if (!source.isEmpty() && source.getFeatureById("meAcc")) {
+                            map.getView().fit(source.getFeatureById("meAcc").getGeometry(), {
+                                maxZoom: 18,
+                                duration: 2000
+                            });
+                        }
+                    }
+                },
+                'Locate me'
+                )
+                
+                utils.drawLocationWithAcuracy(map, source, coords, accuracy)
             }
         )
 
@@ -58,13 +68,13 @@ export default {
         //import location from './location'
 
         
-        const acc = circular(coords, accuracy);
+        // const acc = circular(coords, accuracy)
 
         
         // map.getView().setCenter(fromLonLat(coords))
         // source.clear(true);
         
-        utils.drawLocationWithAcuracy(map, source, coords, acc)
+        utils.changeMyLocation(map, source, coords, accuracy)
         
     }
 

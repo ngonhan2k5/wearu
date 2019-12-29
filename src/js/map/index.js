@@ -2,11 +2,11 @@ import 'ol/ol.css';
 import { Map, View, Overlay } from 'ol';
 
 // import TileLayer from 'ol/layer/Tile';
-import MVT from 'ol/format/MVT';
-import VectorTileLayer from 'ol/layer/VectorTile';
-import VectorTileSource from 'ol/source/VectorTile';
+// import MVT from 'ol/format/MVT';
+// import VectorTileLayer from 'ol/layer/VectorTile';
+// import VectorTileSource from 'ol/source/VectorTile';
 
-import XYZSource from 'ol/source/XYZ';
+// import XYZSource from 'ol/source/XYZ';
 // import OSMSource from 'ol/source/OSM';
 import { fromLonLat, toLonLat } from 'ol/proj';
 
@@ -25,7 +25,7 @@ import olms from 'ol-mapbox-style';
 
 import location from '../part/location'
 // import {useGeographic} from 'ol/proj';
-import orient from '../part/orient'
+// import orient from '../part/orient'
 
 var key = '1Ngcfai0rnKxUgMDfd8O';
 var attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
@@ -34,7 +34,7 @@ var attributions = '<a href="https://www.maptiler.com/copyright/" target="_blank
 var styleJson = 'http://localhost:5001/static/style.json?key=1Ngcfai0rnKxUgMDfd8O';
 
 const defaultAction = {
-
+    locRequire: false,
     onInit: (output) => {
         var {map, source, layer2} = output
         // console.log(params)
@@ -76,22 +76,33 @@ const defaultAction = {
         // source.clear(true);
         
         utils.drawLocationWithAcuracy(map, source, coords, acc)
-
         
     }
-
-    
 }
+
 export const utils = {
+    changeMyLocation: function(map, source, coords, accuracy){
+        const accura = circular(coords, accuracy)
+        const acc = source.getFeatureById("meAcc"),
+            point = source.getFeatureById("mePoint")
+        if (acc && point){
+            // acc.getGeometry().setCoordinates((coords));
+            // point.getGeometry().setCoordinates((coords));
+            acc.setGeometry(accura.transform('EPSG:4326', map.getView().getProjection()));
+            point.setGeometry(new Point(fromLonLat(coords)) )
+        }
+    },
     drawLocationWithAcuracy : function (map, source, coords, accuracy){
-    
-        const acc = new Feature(accuracy.transform('EPSG:4326', map.getView().getProjection()))
+        const accura = circular(coords, accuracy)
+        const acc = new Feature(accura.transform('EPSG:4326', map.getView().getProjection())),
+            point = new Feature(new Point(fromLonLat(coords)))
         
-        acc.setId("ss")
+        acc.setId("meAcc")
+        point.setId("mePoint")
         //console.log(acc)
         source.addFeatures([
             acc,
-            new Feature(new Point(fromLonLat(coords)))
+            point
         ]);
     },
 
@@ -116,8 +127,7 @@ export const utils = {
 
             }
         )
-    
-    
+       
         console.log("SIM")
 
     },
@@ -131,8 +141,8 @@ export const utils = {
         locate.className = 'ol-control ol-unselectable locate asaaaa';
         locate.innerHTML = '<button title="'+label+'">◎</button>';
         var onClick = typeof onClick == "function" ? onClick(source): function () {
-            if (!source.isEmpty() && source.getFeatureById("ss")) {
-                map.getView().fit(source.getFeatureById("ss").getGeometry(), {
+            if (!source.isEmpty() && source.getFeatureById("meAcc")) {
+                map.getView().fit(source.getFeatureById("meAcc").getGeometry(), {
                     maxZoom: 18,
                     duration: 500
                 });
@@ -223,36 +233,39 @@ const init = (opts, params) => {
      
     
     var first = true
-    var locs
+    // var locs
+    console.log("Map")
     navigator.geolocation.watchPosition(
         (pos) => {
             const coords = [pos.coords.longitude, pos.coords.latitude];
             option.onPosChange(map,coords, pos.coords.accuracy, source)
 
             if (first){
-                option.onInit({map, coords, source, layer2, params}) || utils.render(function(){map.addLayer(layer2);})
+                option.onInit({map, coords, accuracy:pos.coords.accuracy, source, layer2, params}) || utils.render(function(){map.addLayer(layer2);})
                 first = false
             }
 
         },
         function (error) {
-            alert(`ERROR: ${error.message}`);
+            if(option.locRequire) 
+                alert(`ERROR: ${error.message}`)
+            else{
+                console.log('bypass location service')
+                option.onInit({map, coords:[0,0], accuracy:0, source, layer2, params}) || utils.render(function(){map.addLayer(layer2);})             
+            }
+
         }, {
             enableHighAccuracy: true
         }
     );
 
-
     // const utils = {
     //     opts: {},
     //     init: function (cbOnce, cb) {
             
-
     //     },
         
     // }
-
-
 
     var element = document.getElementById('popup');
 

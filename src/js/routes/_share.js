@@ -1,4 +1,3 @@
-// import location from '../part/location'
 import { circular } from 'ol/geom/Polygon';
 import {utils} from '../map'
 import { fromLonLat } from 'ol/proj';
@@ -9,8 +8,9 @@ import Point from 'ol/geom/Point';
 console.log('SHARE')
 
 export default {
+    locRequire:false,
     onInit:(output) => {
-        var {map, coords, source, layer2, params} = output
+        var {map, coords, source, layer2, params, accuracy} = output
         console.log(params)
         if (params && params.lon && params.lat){
             var fea = new Feature(new Point(fromLonLat([params.lon, params.lat])))
@@ -46,6 +46,8 @@ export default {
                         }
                     
                     }, 'Locate Shared')
+
+                    utils.drawLocationWithAcuracy(map, source, coords, accuracy)
                 }
             )
             return true
@@ -53,17 +55,11 @@ export default {
         return false
     },
     onPosChange: (map, coords, accuracy, source) => {
-        console.log(coords, accuracy, source)
-        //import location from './location'
-
-        
+        console.log('onPosChange', coords, accuracy, source)
+  
         const acc = circular(coords, accuracy);
 
-        
-        // map.getView().setCenter(fromLonLat(coords))
-        // source.clear(true);
-        
-        utils.drawLocationWithAcuracy(map, source, coords, acc)
+        utils.changeMyLocation(map, source, coords, accuracy)
 
         
     }
