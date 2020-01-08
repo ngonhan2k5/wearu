@@ -24,6 +24,7 @@ import { Circle, Fill, Style, Stroke } from 'ol/style';
 import olms from 'ol-mapbox-style';
 
 import location from '../part/location'
+
 // import {useGeographic} from 'ol/proj';
 // import orient from '../part/orient'
 
@@ -64,96 +65,20 @@ const defaultAction = {
         return true
         // return false
     },
-    onPosChange: (map, coords, accuracy, source) => {
+    onLocationChange: (map, coords, accuracy, source) => {
         console.log(coords, accuracy, source)
         //import location from './location'
-
         
         const acc = circular(coords, accuracy);
-
         
         // map.getView().setCenter(fromLonLat(coords))
         // source.clear(true);
         
-        utils.drawLocationWithAcuracy(map, source, coords, acc)
+        utils.drawMyLocation(map, source, coords, acc)
         
     }
 }
 
-export const utils = {
-    changeMyLocation: function(map, source, coords, accuracy){
-        const accura = circular(coords, accuracy)
-        const acc = source.getFeatureById("meAcc"),
-            point = source.getFeatureById("mePoint")
-        if (acc && point){
-            // acc.getGeometry().setCoordinates((coords));
-            // point.getGeometry().setCoordinates((coords));
-            acc.setGeometry(accura.transform('EPSG:4326', map.getView().getProjection()));
-            point.setGeometry(new Point(fromLonLat(coords)) )
-        }
-    },
-    drawLocationWithAcuracy : function (map, source, coords, accuracy){
-        const accura = circular(coords, accuracy)
-        const acc = new Feature(accura.transform('EPSG:4326', map.getView().getProjection())),
-            point = new Feature(new Point(fromLonLat(coords)))
-        
-        acc.setId("meAcc")
-        point.setId("mePoint")
-        //console.log(acc)
-        source.addFeatures([
-            acc,
-            point
-        ]);
-    },
-
-    drawSimPos: function (map, source, coords, callback){
-       
-        locs = location(coords).change()
-        //console.log(locs[0].get("data"))
-        source.addFeatures(locs)
-        var ext = source.getExtent()
-
-        render(
-            () => {
-                map.addLayer(layer2);
-
-                // map.getView().fit(acc.getGeometry(), {
-                setTimeout(() => {
-                    map.getView().fit(ext, {
-                        maxZoom: 18,
-                        duration: 2000
-                    });
-                }, 1000)
-
-            }
-        )
-       
-        console.log("SIM")
-
-    },
-    render : function ( callback) {
-        olms(map, styleJson).then(
-            callback
-        )
-    },
-    drawLocationMe: (source, onClick, label="Locate me")=> {
-        const locate = document.createElement('div');
-        locate.className = 'ol-control ol-unselectable locate asaaaa';
-        locate.innerHTML = '<button title="'+label+'">◎</button>';
-        var onClick = typeof onClick == "function" ? onClick(source): function () {
-            if (!source.isEmpty() && source.getFeatureById("meAcc")) {
-                map.getView().fit(source.getFeatureById("meAcc").getGeometry(), {
-                    maxZoom: 18,
-                    duration: 500
-                });
-            }
-        }
-        locate.addEventListener('click', onClick);
-        map.addControl(new Control({
-            element: locate
-        }));
-    }
-}
 
 var map = new Map({
     target: 'map-container',
@@ -238,7 +163,7 @@ const init = (opts, params) => {
     navigator.geolocation.watchPosition(
         (pos) => {
             const coords = [pos.coords.longitude, pos.coords.latitude];
-            option.onPosChange(map,coords, pos.coords.accuracy, source)
+            option.onLocationChange(map,coords, pos.coords.accuracy, source)
 
             if (first){
                 option.onInit({map, coords, accuracy:pos.coords.accuracy, source, layer2, params}) || utils.render(function(){map.addLayer(layer2);})
@@ -251,21 +176,13 @@ const init = (opts, params) => {
                 alert(`ERROR: ${error.message}`)
             else{
                 console.log('bypass location service')
-                option.onInit({map, coords:[0,0], accuracy:0, source, layer2, params}) || utils.render(function(){map.addLayer(layer2);})             
+                option.onInit({map, coords:null, accuracy:0, source, layer2, params}) || utils.render(function(){map.addLayer(layer2);})             
             }
 
         }, {
             enableHighAccuracy: true
         }
     );
-
-    // const utils = {
-    //     opts: {},
-    //     init: function (cbOnce, cb) {
-            
-    //     },
-        
-    // }
 
     var element = document.getElementById('popup');
 
@@ -357,3 +274,82 @@ export default init
 //   info.style.opacity = 1;
 // }
 // )
+
+
+export const utils = {
+    updateMyLocation: function(map, source, coords, accuracy){
+        if (coords==null) return
+        
+        const acc = source.getFeatureById("meAcc"),
+            point = source.getFeatureById("mePoint")
+        if (acc && point){
+            // acc.getGeometry().setCoordinates((coords));
+            // point.getGeometry().setCoordinates((coords));
+            const accura = circular(coords, accuracy)
+            acc.setGeometry(accura.transform('EPSG:4326', map.getView().getProjection()));
+            point.setGeometry(new Point(fromLonLat(coords)) )
+        }
+    },
+    drawMyLocation : function (map, source, coords, accuracy){
+        if (coords==null) return
+        const accura = circular(coords, accuracy)
+        const acc = new Feature(accura.transform('EPSG:4326', map.getView().getProjection())),
+            point = new Feature(new Point(fromLonLat(coords)))
+        
+        acc.setId("meAcc")
+        point.setId("mePoint")
+        //console.log(acc)
+        source.addFeatures([
+            acc,
+            point
+        ]);
+    },
+
+    drawSimPos: function (map, source, coords, callback){
+       
+        locs = location(coords).change()
+        //console.log(locs[0].get("data"))
+        source.addFeatures(locs)
+        var ext = source.getExtent()
+
+        render(
+            () => {
+                map.addLayer(layer2);
+
+                // map.getView().fit(acc.getGeometry(), {
+                setTimeout(() => {
+                    map.getView().fit(ext, {
+                        maxZoom: 18,
+                        duration: 2000
+                    });
+                }, 1000)
+
+            }
+        )
+       
+        console.log("SIM")
+
+    },
+    render : function ( callback) {
+        olms(map, styleJson).then(
+            callback
+        )
+    },
+    drawLocateMeButton: (source, onClick, label="Locate me")=> {
+        const locate = document.createElement('div');
+        locate.className = 'ol-control ol-unselectable locate asaaaa';
+        locate.innerHTML = '<button title="'+label+'">◎</button>';
+        var onClick = typeof onClick == "function" ? onClick(source): function () {
+            if (!source.isEmpty() && source.getFeatureById("meAcc")) {
+                map.getView().fit(source.getFeatureById("meAcc").getGeometry(), {
+                    maxZoom: 18,
+                    duration: 500
+                });
+            }
+        }
+        locate.addEventListener('click', onClick);
+        map.addControl(new Control({
+            element: locate
+        }));
+    }
+}

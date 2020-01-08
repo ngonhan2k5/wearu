@@ -33,9 +33,9 @@ compiler.hooks.compilation.tap('html-webpack-plugin-after-emit', () => {
 app.use(express.json())
 
 
-app.post('/api/shorter', routes.shorter)
+// app.post('/api/shorter', routes.shorter)
 
-app.get('/:url-:lru', routes.fetch)
+// app.get('/:url-:lru', routes.fetch)
 
 app.use('/static', express.static(__dirname +'/public', { maxAge: '1d' }))
 

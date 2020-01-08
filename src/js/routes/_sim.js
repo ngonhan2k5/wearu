@@ -28,18 +28,18 @@ export default {
                     });
                 }, 1000)
                 
-                utils.drawLocationWithAcuracy(map, source, coords, accuracy)
+                utils.drawMyLocationWithAcuracy(map, source, coords, accuracy)
             }
         )
 
         return true
     },
-    onPosChange: (map, coords, accuracy, source) => {
+    onLocationChange: (map, coords, accuracy, source) => {
         console.log(coords, accuracy, source)
      
         const acc = circular(coords, accuracy);
 
-        utils.changeMyLocation(map, source, coords, accuracy)
+        utils.updateMyLocation(map, source, coords, accuracy)
         
     }
 

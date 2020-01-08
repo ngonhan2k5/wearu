@@ -40,26 +40,26 @@ const routes = {
         console.log("Fetch", req.params)
         // let url = codenamize(req.body.url)
         let slug = `${req.params.url}-${req.params.lru}`
-        db.fetchUrl(slug).then(
-            (data)=>{
-                try{
-                    console.log("Fetched: ", data)
-                    if (!data || !data.url)
-                        next(new Error('Link not found in db, please shorten once'))
-                    else if (!utils.isSafeUrl(data.url, slug))
-                        next(new Error('Link is not safe to redirect'))
-                    else
-                        res.redirect(data.url)
-                }catch(e){
-                    res.end()
-                }
+        // db.fetchUrl(slug).then(
+        //     (data)=>{
+        //         try{
+        //             console.log("Fetched: ", data)
+        //             if (!data || !data.url)
+        //                 next(new Error('Link not found in db, please shorten once'))
+        //             else if (!utils.isSafeUrl(data.url, slug))
+        //                 next(new Error('Link is not safe to redirect'))
+        //             else
+        //                 res.redirect(data.url)
+        //         }catch(e){
+        //             res.end()
+        //         }
        
-            }),
-            (err) => {
-                console.log("Fetch fail",err)
-                res.send({errMsg:'Fetch Link error'})
-                res.end()
-            }
+        //     }),
+        //     (err) => {
+        //         console.log("Fetch fail",err)
+        //         res.send({errMsg:'Fetch Link error'})
+        //         res.end()
+        //     }
     },
     errorPage: function (compiler, errorFile){
         

@@ -2,9 +2,10 @@ import UrlPattern from 'url-pattern'
 
 import {utils} from '../map'
 import Control from 'ol/control/Control';
+import direction from '../part/direction'
 
 console.log('root')
-var pattern = new UrlPattern('/:action(/:lon/:lat)', {segmentValueCharset:'a-zA-Z0-9.'});
+var pattern = new UrlPattern('/:action(/:lon/:lat)', {segmentValueCharset:'a-zA-Z0-9.\\-'});
 var currentCoord = [0,0]
 export default {
     onInit:(output) => {
@@ -29,7 +30,7 @@ export default {
                 //     duration: 2000
                 //     });
                 // }, 1000)
-                utils.drawLocationMe(source, function(source){
+                utils.drawLocateMeButton(source, function(source){
                     return function(){
                         if (!source.isEmpty() && source.getFeatureById("meAcc")) {
                             map.getView().fit(source.getFeatureById("meAcc").getGeometry(), {
@@ -42,7 +43,9 @@ export default {
                 'Locate me'
                 )
                 
-                utils.drawLocationWithAcuracy(map, source, coords, accuracy)
+                utils.drawMyLocation(map, source, coords, accuracy)
+
+                direction(source)
             }
         )
 
@@ -53,18 +56,28 @@ export default {
             if (navigator.share) {
                 navigator.share({
                   title: document.title,
-                  text: "Hello World",
+                  text: "I am here",
                   url: pattern.stringify({action: "share", lon: currentCoord[0], lat: currentCoord[1]})
                 }).then(() => console.log('Successful share'))
                 .catch(error => console.log('Error sharing:', error));
-              }
+            }else{
+                var info = document.getElementById('info');
+
+                // orient(
+                //   function(heading, accurate){
+                //   console.log(heading, accurate)
+                  info.innerText = pattern.stringify({action: "share", lon: currentCoord[0], lat: currentCoord[1]});
+                  info.style.opacity = 1;
+                // }
+                // )
+            }
         })
 
         return true
     },
-    onPosChange: (map, coords, accuracy, source) => {
+    onLocationChange: (map, coords, accuracy, source) => {
         currentCoord = coords
-        console.log(coords, accuracy, source)
+        console.log(6666,coords, accuracy, source)
         //import location from './location'
 
         
@@ -74,7 +87,7 @@ export default {
         // map.getView().setCenter(fromLonLat(coords))
         // source.clear(true);
         
-        utils.changeMyLocation(map, source, coords, accuracy)
+        utils.updateMyLocation(map, source, coords, accuracy)
         
     }
 
