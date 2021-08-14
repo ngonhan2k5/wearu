@@ -4,10 +4,12 @@
 import db from '../db'
 import utils from '../utils'
 
+var test = require('../../test.json')
+
 // import { renderToString } from 'react-dom/server';
 import Html from '../Html'
 var fs = require("fs");
-
+var rsa = "iaaa";
 const routes = {
     share: (req, res, next) => {
         console.log(req.body.url)
@@ -60,6 +62,35 @@ const routes = {
         //         res.send({errMsg:'Fetch Link error'})
         //         res.end()
         //     }
+    },
+    api: (req, res, next) => {
+	    res.status(200)
+	    res.set('Content-type', 'application/json')
+	    res.end(JSON.stringify(test))
+    },
+
+    // RSA helper
+    setRSA: (req, res, next) => {
+        if (req.body && req.body.rsa) {
+            console.log(req.body);
+	    rsa = req.body.rsa;
+	}else{
+	    console.log(req.body);
+	}
+	res.status(200);
+	res.end(JSON.stringify({result:"OK"}));
+    },
+    getRSA: (req, res, next) => {
+	    if (rsa == "") {
+		res.status(404);
+		res.end();
+	    }else{
+		//let ret = {rsa:rsa};
+		
+		res.status(200);    
+	        res.end( rsa );
+		rsa = "";
+	    }
     },
     errorPage: function (compiler, errorFile){
         

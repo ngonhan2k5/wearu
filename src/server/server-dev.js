@@ -6,6 +6,8 @@ import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 
 // import history from 'connect-history-api-fallback'
+const bodyParser = require('body-parser');
+var morgan = require('morgan')
 
 import config from '../../webpack.dev.config.js'
 import routes from './routes'
@@ -30,13 +32,17 @@ compiler.hooks.compilation.tap('html-webpack-plugin-after-emit', () => {
     });  
 });
 
+app.use(morgan('combined'))
 app.use(express.json())
-
+app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.json());
 
 // app.post('/api/shorter', routes.shorter)
 
 // app.get('/:url-:lru', routes.fetch)
-
+app.get('/api', routes.api)
+app.get('/api/getrsa', routes.getRSA)
+app.post('/api/setrsa', routes.setRSA)
 app.use('/static', express.static(__dirname +'/public', { maxAge: '1d' }))
 
 // app.get('/share/:lon-:lat', routes.share)
