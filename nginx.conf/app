@@ -94,8 +94,8 @@ server {
 	listen      443 ssl;
 	server_name wearu.idbi.me;
 
-	ssl_certificate /etc/ssl/wearu.pem;
-	ssl_certificate_key /etc/ssl/wearu.key;
+	ssl_certificate /opt/apps/ssl/wearu.pem;
+	ssl_certificate_key /opt/apps/ssl/wearu.key;
 
 	# openssl dhparam 4096 -out /etc/ssl/dhparam.pem
 	ssl_dhparam /opt/apps/ssl/dhparam.pem;
